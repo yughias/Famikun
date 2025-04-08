@@ -270,10 +270,12 @@ void mainloop(){
     pmouseX = mouseX;
     pmouseY = mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
+    #ifndef __EMSCRIPTEN__
     mouseX -= localX;
     mouseY -= localY;
     mouseX *= (float)width/render_width;
     mouseY *= (float)height/render_height;
+    #endif
     if(mouseX < 0)
         mouseX = 0;
     if(mouseY < 0)
