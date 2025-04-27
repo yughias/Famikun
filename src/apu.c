@@ -470,6 +470,8 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, int scale, SDL_Su
         } 
     }
 
+    if(start == -1)
+        start = 0;
     if(end == -1)
         end = start;
     idx = (start + end) / 2;
