@@ -298,10 +298,11 @@ float apu_get_sample(apu_t* apu){
     ch[3] = apu->mute[3] ? 0 : apu_get_noise_sample(&apu->noise);
     ch[4] = apu->mute[4] ? 0 : apu_get_dmc_sample(&apu->dmc);
 
-    for(int i = 0; i < 5; i++){
-        if(apu->display_idx[i] != DISPLAY_BUFFER_SIZE){
-            apu->display_buffers[i][apu->display_idx[i]++] = ch[i];
+    if(apu->display_idx != DISPLAY_BUFFER_SIZE){
+        for(int i = 0; i < 5; i++){
+            apu->display_buffers[i][apu->display_idx] = ch[i];
         }
+        apu->display_idx += 1;
     }
 
     float pulse_out = pulse_table[ch[0] + ch[1]];
@@ -446,20 +447,19 @@ u8 apu_get_status(apu_t* apu){
 }
 
 
-void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, int scale, SDL_Surface* s){
+void apu_draw_wave(int x0, int y0, u8* buffer, int scale, SDL_Surface* s){
     int* pixels = (int*)s->pixels;
     const int white = color(255, 255, 255);
 
     float avg = 1;
-    for(int i = 0; i < buffer_len; i++)
+    for(int i = 0; i < DISPLAY_BUFFER_SIZE; i++)
         avg += buffer[i];
-    if(buffer_len)
-        avg = avg / buffer_len;
+    avg = avg / DISPLAY_BUFFER_SIZE;
 
     int idx = 0;
     int start = -1;
     int end = -1;
-    for(int i = s->w/4; i < buffer_len; i++){
+    for(int i = s->w/4; i < DISPLAY_BUFFER_SIZE; i++){
         u8 s0 = buffer[i-1];
         u8 s1 = buffer[i];
         if(start == -1 && s0 < avg && s1 >= avg){
@@ -482,8 +482,8 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, int scale, SDL_Su
     int prev;
     for(int i = 0; i < s->w/2; i++){
         int sample_idx = idx;
-        if(sample_idx >= buffer_len)
-            sample_idx = buffer_len ? buffer_len-1 : 0;
+        if(sample_idx >= DISPLAY_BUFFER_SIZE)
+            sample_idx = DISPLAY_BUFFER_SIZE ? DISPLAY_BUFFER_SIZE-1 : 0;
         int sample = y0 - buffer[sample_idx] * scale;
         if(!i)
             prev = sample;
@@ -505,6 +505,9 @@ void apu_draw_waves(apu_t* apu, SDL_Window** win){
         *win = NULL;
         return;
     }
+    // display waveforms only if buffer is full
+    if(apu->display_idx != DISPLAY_BUFFER_SIZE)
+        return;
     SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
     SDL_FillRect(s, NULL, 0);
@@ -515,13 +518,12 @@ void apu_draw_waves(apu_t* apu, SDL_Window** win){
             int x0 = x*s->w/2;
             int y0 = s->h/6 + y*s->h/3;
             u8* buf = apu->display_buffers[idx];
-            int buf_len = apu->display_idx[idx];
-            apu_draw_wave(x0, y0, buf, buf_len, 2, s);
+            apu_draw_wave(x0, y0, buf, 2, s);
         }   
     }
 
     // DMC
-    apu_draw_wave(0, s->h - 1, apu->display_buffers[4], apu->display_idx[4], 1, s);
+    apu_draw_wave(0, s->h - 1, apu->display_buffers[4], 1, s);
 
     const int grey = color(100, 100, 100);
     for(int i = 0; i < s->w; i++){
@@ -531,8 +533,7 @@ void apu_draw_waves(apu_t* apu, SDL_Window** win){
     for(int i = 0; i < s->h; i++)
         pixels[s->w / 2 + i * s->w] = grey;
     
-    memset(apu->display_buffers, 0, sizeof(apu->display_buffers));
-    memset(apu->display_idx, 0, sizeof(apu->display_idx));
+    apu->display_idx = 0;
 
     SDL_UpdateWindowSurface(*win);
 }
