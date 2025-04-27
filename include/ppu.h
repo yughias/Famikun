@@ -70,10 +70,10 @@ u16 ppu_get_vram_addr(VRAM_ALIGN align, u16 addr, u16 vram_size);
 
 void ppu_get_grayscale_tile(ppu_t* ppu, u16 base, u8 idx, int tile[64]);
 void ppu_get_tile(ppu_t* ppu, u16 base, u8 palette, u8 idx, int tile[64]);
-void ppu_draw_chr(ppu_t* ppu, SDL_Window* win);
-void ppu_draw_nametables(ppu_t* ppu, SDL_Window* win);
-void ppu_draw_palettes(ppu_t* ppu, SDL_Window* win);
-void ppu_draw_oam(ppu_t* ppu, SDL_Window* win);
+void ppu_draw_chr(ppu_t* ppu, SDL_Window** win);
+void ppu_draw_nametables(ppu_t* ppu, SDL_Window** win);
+void ppu_draw_palettes(ppu_t* ppu, SDL_Window** win);
+void ppu_draw_oam(ppu_t* ppu, SDL_Window** win);
 u8 ppu_get_palette_color(ppu_t* ppu, u8 palette, u8 idx);
 
 int ppu_convert_to_rgb(u8 nes_col);

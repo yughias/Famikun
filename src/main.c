@@ -70,10 +70,10 @@ void loop(){
 
     #ifndef __EMSCRIPTEN__
     nes_t tmp = nes;
-    ppu_draw_chr(&tmp.ppu, win_chr);
-    ppu_draw_nametables(&tmp.ppu, win_nametable);
-    ppu_draw_palettes(&tmp.ppu, win_palette);
-    ppu_draw_oam(&tmp.ppu, win_oam);
-    apu_draw_waves(&nes.apu, win_apu);
+    ppu_draw_chr(&tmp.ppu, &win_chr);
+    ppu_draw_nametables(&tmp.ppu, &win_nametable);
+    ppu_draw_palettes(&tmp.ppu, &win_palette);
+    ppu_draw_oam(&tmp.ppu, &win_oam);
+    apu_draw_waves(&nes.apu, &win_apu);
     #endif
 }

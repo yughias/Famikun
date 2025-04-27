@@ -154,7 +154,7 @@ void apu_write_mi_reg(apu_t* apu, u8 byte);
 
 u16 apu_get_sweep_target(pulse_t* pulse, bool idx);
 
-void apu_draw_waves(apu_t* apu, SDL_Window* win);
+void apu_draw_waves(apu_t* apu, SDL_Window** win);
 void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, bool use_avg, int scale, SDL_Surface* s);
 
 #endif

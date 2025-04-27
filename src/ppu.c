@@ -153,13 +153,16 @@ void ppu_get_tile(ppu_t* ppu, u16 base, u8 palette, u8 idx, int tile[64]){
     }
 }
 
-void ppu_draw_chr(ppu_t* ppu, SDL_Window* win){
-    SDL_Surface* s = SDL_GetWindowSurface(win);
-    if(!s)
+void ppu_draw_chr(ppu_t* ppu, SDL_Window** win){
+    Uint32 id = SDL_GetWindowID(*win);
+    if(!id){
+        *win = NULL;
         return;
+    }
+    SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
-    int w, h;
-    SDL_GetWindowSize(win, &w, &h);
+    int w = s->w;
+    int h = s->h;
 
     for(int y = 0; y < 16; y++){
         for(int x = 0; x < 32; x++){
@@ -169,14 +172,17 @@ void ppu_draw_chr(ppu_t* ppu, SDL_Window* win){
         }
     }
 
-    SDL_UpdateWindowSurface(win);
+    SDL_UpdateWindowSurface(*win);
 }
 
 
-void ppu_draw_nametables(ppu_t* ppu, SDL_Window* win){
-    SDL_Surface* s = SDL_GetWindowSurface(win);
-    if(!s)
+void ppu_draw_nametables(ppu_t* ppu, SDL_Window** win){
+    Uint32 id = SDL_GetWindowID(*win);
+    if(!id){
+        *win = NULL;
         return;
+    }
+    SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
     u16 pattern_base = ppu->ctrl & (1 << 4) ? 0x1000 : 0x0000; 
 
@@ -222,13 +228,16 @@ void ppu_draw_nametables(ppu_t* ppu, SDL_Window* win){
         pixels[((x + SCREEN_WIDTH) % s->w) + y * s->w] = red;
     }
 
-    SDL_UpdateWindowSurface(win);
+    SDL_UpdateWindowSurface(*win);
 }
 
-void ppu_draw_palettes(ppu_t* ppu, SDL_Window* win){
-    SDL_Surface* s = SDL_GetWindowSurface(win);
-    if(!s)
+void ppu_draw_palettes(ppu_t* ppu, SDL_Window** win){
+    Uint32 id = SDL_GetWindowID(*win);
+    if(!id){
+        *win = NULL;
         return;
+    }
+    SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
 
     for(int p = 0; p < 8; p++){
@@ -241,13 +250,16 @@ void ppu_draw_palettes(ppu_t* ppu, SDL_Window* win){
         }
     }
 
-    SDL_UpdateWindowSurface(win);
+    SDL_UpdateWindowSurface(*win);
 }
 
-void ppu_draw_oam(ppu_t* ppu, SDL_Window* win){
-    SDL_Surface* s = SDL_GetWindowSurface(win);
-    if(!s)
+void ppu_draw_oam(ppu_t* ppu, SDL_Window** win){
+    Uint32 id = SDL_GetWindowID(*win);
+    if(!id){
+        *win = NULL;
         return;
+    }
+    SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
 
     int magenta = color(255, 0, 255);
@@ -290,7 +302,7 @@ void ppu_draw_oam(ppu_t* ppu, SDL_Window* win){
         }
     }
 
-    SDL_UpdateWindowSurface(win);
+    SDL_UpdateWindowSurface(*win);
 }
 
 u8 ppu_get_palette_color(ppu_t* ppu, u8 palette, u8 idx){

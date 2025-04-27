@@ -469,7 +469,7 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, bool use_avg, int
     }
     
     int prev;
-    for(int i = 0; i < 256; i++){
+    for(int i = 0; i < s->w/2; i++){
         int sample_idx = idx;
         if(sample_idx >= buffer_len)
             sample_idx = buffer_len ? buffer_len-1 : 0;
@@ -488,10 +488,13 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, bool use_avg, int
     }
 }
 
-void apu_draw_waves(apu_t* apu, SDL_Window* win){
-    SDL_Surface* s = SDL_GetWindowSurface(win);
-    if(!s)
+void apu_draw_waves(apu_t* apu, SDL_Window** win){
+    Uint32 id = SDL_GetWindowID(*win);
+    if(!id){
+        *win = NULL;
         return;
+    }
+    SDL_Surface* s = SDL_GetWindowSurface(*win);
     int* pixels = (int*)s->pixels;
     SDL_FillRect(s, NULL, 0);
 
@@ -520,7 +523,7 @@ void apu_draw_waves(apu_t* apu, SDL_Window* win){
     memset(apu->display_buffers, 0, sizeof(apu->display_buffers));
     memset(apu->display_idx, 0, sizeof(apu->display_idx));
 
-    SDL_UpdateWindowSurface(win);
+    SDL_UpdateWindowSurface(*win);
 }
 
 void apu_clock_quarter_frame(apu_t* apu){
