@@ -450,11 +450,11 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, int scale, SDL_Su
     int* pixels = (int*)s->pixels;
     const int white = color(255, 255, 255);
 
-    int avg = 0;
+    float avg = 1;
     for(int i = 0; i < buffer_len; i++)
         avg += buffer[i];
     if(buffer_len)
-        avg /= buffer_len;
+        avg = avg / buffer_len;
 
     int idx = 0;
     int start = -1;
@@ -462,14 +462,16 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int buffer_len, int scale, SDL_Su
     for(int i = s->w/4; i < buffer_len; i++){
         u8 s0 = buffer[i-1];
         u8 s1 = buffer[i];
-        if(s0 < avg && s1 >= avg)
+        if(start == -1 && s0 < avg && s1 >= avg){
             start = i;
-        if(start != -1 && s1 < avg && s0 >= avg){
+        } else if(start != -1 && s1 < avg && s0 >= avg){
             end = i;
             break;
         } 
     }
 
+    if(end == -1)
+        end = start;
     idx = (start + end) / 2;
     idx -= s->w/4;
     if(idx < 0)
