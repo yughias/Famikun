@@ -451,10 +451,12 @@ void apu_draw_wave(int x0, int y0, u8* buffer, int scale, SDL_Surface* s){
     int* pixels = (int*)s->pixels;
     const int white = color(255, 255, 255);
 
-    float avg = 1;
+    float avg = 0;
     for(int i = 0; i < DISPLAY_BUFFER_SIZE; i++)
         avg += buffer[i];
-    avg = avg / DISPLAY_BUFFER_SIZE;
+    avg /= DISPLAY_BUFFER_SIZE;
+
+    y0 += avg * scale;
 
     int idx = 0;
     int start = -1;
@@ -518,12 +520,12 @@ void apu_draw_waves(apu_t* apu, SDL_Window** win){
             int x0 = x*s->w/2;
             int y0 = s->h/6 + y*s->h/3;
             u8* buf = apu->display_buffers[idx];
-            apu_draw_wave(x0, y0, buf, 2, s);
+            apu_draw_wave(x0, y0, buf, 4, s);
         }   
     }
 
     // DMC
-    apu_draw_wave(0, s->h - 1, apu->display_buffers[4], 1, s);
+    apu_draw_wave(0, s->h - s->h/6, apu->display_buffers[4], 1, s);
 
     const int grey = color(100, 100, 100);
     for(int i = 0; i < s->w; i++){

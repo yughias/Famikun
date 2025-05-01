@@ -37,7 +37,7 @@ MUTE_FUNC(4)
 OPEN_FUNC(nametable, "NAMETABLE", 32*8*2, 30*8*2)
 OPEN_FUNC(chr, "TILESET", 32*8, 16*8)
 OPEN_FUNC(palette, "PALETTE", 4*16, 8*16)
-OPEN_FUNC(apu, "APU", 256*2, 128*3)
+OPEN_FUNC(apu, "APU", 256*2, 256*3)
 OPEN_FUNC(oam, "SPRITES", 8*32, 8*32)
 
 static void cb_pause(){ pause ^= 1; tickButton(btn_pause, pause); }
