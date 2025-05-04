@@ -84,8 +84,8 @@ typedef struct apu_t {
     float buffer[SAMPLE_BUFFER_SIZE];
     int buffer_idx;
 
-    int push_rate_counter;
-    int push_rate_reload;
+    float push_rate_counter;
+    float push_rate_reload;
 
     pulse_t pulses[2];
     triangle_t triangle;

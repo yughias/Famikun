@@ -98,7 +98,7 @@ void apu_sync(apu_t* apu){
 }
 
 void apu_push_sample(apu_t* apu){
-    if(!apu->push_rate_counter){
+    if(apu->push_rate_counter <= 0){
         apu->push_rate_counter += apu->push_rate_reload;
         float sample = apu_get_sample(apu);
 
