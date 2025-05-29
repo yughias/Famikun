@@ -46,8 +46,8 @@ Controller's inputs are also properly mapped to the emulated device.
 - [x] Turbo mode (via TAB button)
 - [x] PPU View (OAM, Background, Palettes)
 - [ ] Savestates and Loadstates
-- [ ] Waveform visualizer
-- [ ] Possibility to enabled/disable individual Apu channels
+- [X] Waveform visualizer
+- [X] Possibility to enabled/disable individual Apu channels
 
 ## Demo
 
